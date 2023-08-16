@@ -1,0 +1,38 @@
+html {
+    height: 100%;
+}
+
+body {
+    padding: 15px;
+    background-color: #000000;
+    background: rgba(0, 0, 0, 0.6) !important;
+    color: #ffffff;
+}
+
+#wrapper {
+    background-color: #333;
+}
+
+#channels tr {
+}
+
+#channels td { 
+    padding: 4px 10px 4px 10px;
+}
+
+.slider {
+    width: 400px !important;
+}
+
+.channel {
+    font-weight: bold;
+}
+
+.value {
+    color: red;
+    font-family: monospace;
+}
+
+.name {
+    font-family: monospace;
+}

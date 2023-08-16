@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>Maxux DMX Room</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/dmx.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="wrapper">
+    <div class="container-fluid">
+
+        <h1>Presets</h1>
+        <div id="presets">
+            <div id="presets-list">
+            </div>
+
+            <div class="row g-3 align-items-center py-4">
+                <div class="col-auto">
+                    <label for="save-name" class="col-form-label">Preset Name</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="save-name" class="form-control">
+                </div>
+                <div class="col-auto">
+                    <button onclick="preset_save();" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-4">
+            <h1>Channels</h1>
+            <table id="channels">
+
+            </table>
+        </div>
+
+        <div id="disconnected">Connecting...</div>
+    </div>
+    </div>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/dmx.js"></script>
+</body>
+
+</html>
