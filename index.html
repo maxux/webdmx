@@ -9,12 +9,14 @@
     <meta name="author" content="">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/ios-icon.png">
+    <link rel="icon" type="image/png" href="images/ios-icon.png">
 
     <title>Maxux DMX Room</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/dmx.css" rel="stylesheet">
+    <link href="css/dmx.css?2" rel="stylesheet">
 </head>
 
 <body>
@@ -23,10 +25,24 @@
 
         <h1>Presets</h1>
         <div id="presets">
-            <div id="presets-list">
+            <div id="presets-important" class="d-flex d-lg-block">
             </div>
 
-            <div class="row g-3 align-items-center py-4">
+            <div id="presets-list" class="d-flex flex-wrap d-lg-block">
+            </div>
+
+            <div class="btn-group d-flex d-lg-inline-flex py-1 mx-1" role="group" aria-label="Presets Mode">
+              <input type="radio" class="btn-check" name="moderadio" id="load-replace" autocomplete="off" checked>
+              <label class="btn btn-outline-info" for="load-replace">Replace</label>
+
+              <input type="radio" class="btn-check" name="moderadio" id="load-add" autocomplete="off">
+              <label class="btn btn-outline-info" for="load-add">Additon</label>
+
+              <input type="radio" class="btn-check" name="moderadio" id="load-sub" autocomplete="off">
+              <label class="btn btn-outline-info" for="load-sub">Substract</label>
+            </div>
+
+            <div class="row g-3 align-items-center py-4 d-none d-lg-flex">
                 <div class="col-auto">
                     <label for="save-name" class="col-form-label">Preset Name</label>
                 </div>
@@ -39,11 +55,11 @@
             </div>
         </div>
 
-        <div class="py-4">
+        <div class="channels py-4">
             <h1>Channels</h1>
-            <table id="channels">
+            <div id="channels">
 
-            </table>
+            </div>
         </div>
 
         <div id="disconnected">Connecting...</div>
@@ -52,7 +68,7 @@
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/dmx.js"></script>
+    <script src="js/dmx.js?1"></script>
 </body>
 
 </html>

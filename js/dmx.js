@@ -6,16 +6,20 @@ var names = {
     52: "Blind Left - Red",
     53: "Blind Left - Green",
     54: "Blind Left - Blue",
-    55: "Blind Right - Dimmer",
-    56: "Blind Right - Functions",
-    57: "Blind Right - Red",
-    58: "Blind Right - Green",
-    59: "Blind Right - Blue",
-    60: "Black Light",
-    61: "Black Strobe",
-    91: "Kitchen",
-    101: "Stars",
-    103: "Bright Par-16",
+    55: "Blind Left - Sound",
+    56: "Blind Right - Dimmer",
+    57: "Blind Right - Functions",
+    58: "Blind Right - Red",
+    59: "Blind Right - Green",
+    60: "Blind Right - Blue",
+    61: "Blind Right - Sound",
+    62: "Black Light",
+    63: "Black Strobe",
+    97: "Desktop Par-16",
+    99: "Living Room Par-16",
+    100: "Service Par-16",
+    101: "Kitchen Par-16 Down",
+    103: "Kitchen Par-16 Up",
     105: "Grp 1 - Red",
     106: "Grp 1 - Green",
     107: "Grp 1 - Blue",
@@ -44,11 +48,15 @@ var names = {
 
 
 function sliders() {
-    for(var i = 0; i < 128; i++) {
-        let tr = $('<tr>');
+    for(var i = 45; i < 128; i++) {
+        if(i > 66 && i < 94)
+            continue;
 
-        tr.append($("<td>", {'class': 'channel'}).html("Channel " + (i + 1)));
-        tr.append($('<td>').append(
+        let active = names[i + 1] != undefined ? "row channel-active" : "row channel-inactive";
+        let row = $('<div>', {'class': active});
+
+        row.append($("<div>", {'class': 'col-2 order-1 channel d-none d-lg-block'}).html("Channel " + (i + 1)));
+        row.append($('<div>', {'class': 'col order-3'}).append(
             $('<input>', {
                 'type': 'range',
                 'min': '0',
@@ -60,10 +68,10 @@ function sliders() {
                 'oninput': 'updater(this)',
             })
         ));
-        tr.append($("<td>", {'class': 'value', 'id': 'value-' + i}).html("0"));
-        tr.append($("<td>", {'class': 'name', 'id': 'name-' + i}).html(names[i + 1] != undefined ? names[i + 1] : ""));
+        row.append($("<div>", {'class': 'col-1 value order-2', 'id': 'value-' + i}).html("0"));
+        row.append($("<div>", {'class': 'col name order-1 order-md-4', 'id': 'name-' + i}).html(names[i + 1] != undefined ? names[i + 1] : ""));
 
-        $('#channels').append(tr);
+        $('#channels').append(row);
     }
 }
 
@@ -71,8 +79,13 @@ function preset_save() {
     request("save", $("#save-name").val());
 }
 
+function preset_load_replace(name) {
+    request("load-replace", name);
+}
+
 function preset_load(name) {
-    request("load", name);
+    let mode = document.querySelector('input[name="moderadio"]:checked').id;
+    request(mode, name);
 }
 
 function request(name, value) {
@@ -117,13 +130,30 @@ function connect() {
         }
 
         if(json["type"] == "presets") {
+            $("#presets-important").empty();
             $("#presets-list").empty();
 
             for(var i = 0; i < json["value"].length; i++) {
-                let tags = {
-                    'class': 'btn btn-dark m-1',
-                    'onclick': "preset_load('" + json["value"][i]["name"] + "');",
-                };
+                let onclick = "preset_load('" + json["value"][i]["name"] + "');";
+                let onclick_imp = "preset_load_replace('" + json["value"][i]["name"] + "');";
+
+                let tags = {'class': 'btn btn-dark m-1 flex-fill', 'onclick': onclick};
+                let tag_default = {'class': 'btn btn-success m-1 flex-fill', 'onclick': onclick_imp};
+                let tag_black = {'class': 'btn btn-danger m-1 flex-fill', 'onclick': onclick_imp};
+
+                if(json["value"][i]["name"] == "Default") {
+                    $("#presets-important").append(
+                        $("<button>", tag_default).html(json["value"][i]["name"])
+                    );
+                    continue;
+                }
+
+                if(json["value"][i]["name"] == "Black") {
+                    $("#presets-important").append(
+                        $("<button>", tag_black).html(json["value"][i]["name"])
+                    );
+                    continue;
+                }
 
                 $("#presets-list").append(
                     $("<button>", tags).html(json["value"][i]["name"])
