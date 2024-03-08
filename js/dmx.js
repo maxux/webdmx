@@ -1,5 +1,6 @@
 var socket;
 var state = [];
+var univers = [];
 var names = {
     50: "Blind Left - Dimmer",
     51: "Blind Left - Functions",
@@ -44,10 +45,33 @@ var names = {
     126: "Grp 4 - Cold White",
     127: "Grp 4 - Warm White",
     128: "Grp 4 - UV",
-}
+};
 
+var master = 255;
+let dimmers = [ // channels
+    50, 56, 62, 97, 99, 100, 101, 103,
+    105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116,
+    117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128
+];
 
 function sliders() {
+    // master channel
+    let row = $('<div>', {'class': "row channel-active mb-4"});
+
+    row.append($("<div>", {'class': 'col-2 order-1 channel d-none d-lg-block'}).html("Master"));
+    row.append($('<div>', {'class': 'col order-3'}).append(
+        $('<input>', {
+            'type': 'range', 'min': '0', 'max': '255', 'value': '255', 'class': 'slider',
+            'id': 'master',
+            'onchange': 'master_updater(this)',
+            'oninput': 'master_updater(this)',
+        })
+    ));
+    row.append($("<div>", {'class': 'col-1 value order-2', 'id': 'value-master'}).html("255"));
+    row.append($("<div>", {'class': 'col name order-1 order-md-4', 'id': 'master'}).html("Master Dimmable"));
+
+    $('#channels').append(row);
+
     for(var i = 45; i < 128; i++) {
         if(i > 66 && i < 94)
             continue;
@@ -58,11 +82,7 @@ function sliders() {
         row.append($("<div>", {'class': 'col-2 order-1 channel d-none d-lg-block'}).html("Channel " + (i + 1)));
         row.append($('<div>', {'class': 'col order-3'}).append(
             $('<input>', {
-                'type': 'range',
-                'min': '0',
-                'max': '255',
-                'value': '0',
-                'class': 'slider',
+                'type': 'range', 'min': '0', 'max': '255', 'value': '0', 'class': 'slider',
                 'id': 'channel-' + i,
                 'onchange': 'updater(this)',
                 'oninput': 'updater(this)',
@@ -93,15 +113,32 @@ function request(name, value) {
 }
 
 function commit() {
-    socket.send(JSON.stringify({"type": "change", "value": state}));
+    socket.send(JSON.stringify({"type": "change", "value": univers}));
+}
+
+function univers_update() {
+    univers = state.slice();
+
+    for(var id in dimmers) {
+        let channel = dimmers[id] - 1;
+        univers[channel] = parseInt(state[channel] * (master / 255));
+    }
+}
+
+function master_updater(source) {
+    master = parseInt(source.value);
+    $("#value-master").html(source.value);
+
+    univers_update();
+    commit();
 }
 
 function updater(source) {
-    console.log(source.id, source.value);
-    let id = source.id.substr(8);
-    console.log(id);
+    let id = parseInt(source.id.substr(8));
 
-    state[parseInt(id)] = parseInt(source.value);
+    state[id] = parseInt(source.value);
+    univers_update();
+
     $("#value-" + id).html(source.value);
     commit();
 }
@@ -121,7 +158,8 @@ function connect() {
         console.log(json);
 
         if(json["type"] == "state") {
-            state = json["value"];
+            univers = json["value"];
+            state = univers.slice(); // shallow copy
 
             for(var i = 0; i < state.length; i++) {
                 $('#channel-' + i).val(state[i]);
